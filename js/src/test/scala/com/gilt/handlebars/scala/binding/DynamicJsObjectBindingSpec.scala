@@ -8,9 +8,10 @@ import scala.scalajs.js
 class DynamicJsObjectBindingSpec extends AnyFunSpec with Matchers {
   describe("traverse") {
     it("traverses methods in classes") {
-      class Person(val name: String) extends js.Object
-      DynamicBinding(new Person("Bob")).traverse("name") should equal (DynamicBinding("Bob"))
-    }
+      class Person(val name: String, val age: Int) extends js.Object
+      val b = DynamicBinding(new Person("Bob", 42))
+      b.traverse("name") should equal(DynamicBinding("Bob"))
+      b.traverse("age") should equal(DynamicBinding(42))    }
 
   }
 }

@@ -50,8 +50,10 @@ class DynamicBindingSpec extends AnyFunSpec with Matchers {
 
   describe("traverse") {
     it("traverses methods in classes") {
-      case class Person(name: String)
-      DynamicBinding(Person("Bob")).traverse("name") should equal (DynamicBinding("Bob"))
+      case class Person(name: String, age: Int)
+      val b = DynamicBinding(Person("Bob", 42))
+      b.traverse("name") should equal (DynamicBinding("Bob"))
+      b.traverse("age") should equal (DynamicBinding(42))
     }
 
     it("traverses string members in maps") {

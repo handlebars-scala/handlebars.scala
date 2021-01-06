@@ -37,7 +37,7 @@ class DynamicBinding(val data: Any) extends FullBinding[Any] with Loggable {
         if (!js.Object.hasProperty(data, "$classData")) None
         else {
           val objName = data.$classData.arrayEncodedName.asInstanceOf[String].replaceAll("\\.", "_").replace("$", "\\$").replaceAll(";$", "")
-          val matcher = s"^${objName}__(.)_(.*)$$".r
+          val matcher = s"^${objName}__(.)_${a._2}$$".r
           js.Object.entries(data).collect { case js.Tuple2(k, v) if matcher.matches(k) => v}.headOption
         }
       }

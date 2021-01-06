@@ -3,7 +3,6 @@ package com.gilt.handlebars.scala.visitor
 import com.gilt.handlebars.scala.Handlebars
 import org.scalatest.{ FunSpec, Matchers }
 import com.gilt.handlebars.scala.helper.Helper
-import com.gilt.handlebars.scala.binding.dynamic._
 
 /**
  * User: chicks

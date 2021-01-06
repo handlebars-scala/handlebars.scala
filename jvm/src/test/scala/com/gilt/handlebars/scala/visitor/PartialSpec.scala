@@ -3,7 +3,6 @@ package com.gilt.handlebars.scala.visitor
 import java.io.File
 
 import com.gilt.handlebars.scala.Handlebars
-import com.gilt.handlebars.scala.binding.dynamic._
 import com.gilt.handlebars.scala.parser.TemplateNotFoundException
 import org.scalatest.{FunSpec, Matchers}
 

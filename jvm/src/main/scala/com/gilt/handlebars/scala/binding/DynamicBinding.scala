@@ -1,4 +1,4 @@
-package com.gilt.handlebars.scala.binding.dynamic
+package com.gilt.handlebars.scala.binding
 
 import java.lang.reflect.Method
 import com.gilt.handlebars.scala.binding.{Binding, BindingFactory, FullBinding, VoidBinding}

@@ -1,10 +1,9 @@
-package com.gilt.handlebars.scala.binding.dynamic
+package com.gilt.handlebars.scala.binding
 
-import org.scalatest.{ FunSpec, Matchers }
-import com.gilt.handlebars.scala.binding.VoidBinding
-import com.gilt.handlebars.scala.binding.FullBinding
+import org.scalatest.funspec.AnyFunSpec
+import org.scalatest.matchers.should.Matchers
 
-class DynamicBindingSpec extends FunSpec with Matchers {
+class DynamicBindingSpec extends AnyFunSpec with Matchers {
   def d(v: Any) : String = {
     if (v == null) return "null"
     v match {

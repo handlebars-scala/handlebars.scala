@@ -1,11 +1,12 @@
 package com.gilt.handlebars.scala.parser
 
-import org.scalatest.{ FunSpec, Matchers }
 import org.scalatest.Inside
 
 import com.gilt.scalatest.matchers._
+import org.scalatest.funspec.AnyFunSpec
+import org.scalatest.matchers.should.Matchers
 
-class HandlebarsGrammarSpec extends FunSpec with Matchers with ParserMatchers {
+class HandlebarsGrammarSpec extends AnyFunSpec with Matchers with ParserMatchers {
   import com.gilt.handlebars.scala.parser._
   val parsers = new HandlebarsGrammar(("{{","}}"))
 

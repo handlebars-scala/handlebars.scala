@@ -3,7 +3,6 @@ package com.gilt.handlebars.scala.context
 import org.scalatest.{ FunSpec, Matchers }
 import java.util.Date
 import com.gilt.handlebars.scala.parser.{Mustache, Identifier, Program, HandlebarsGrammar}
-import com.gilt.handlebars.scala.binding.dynamic._
 
 /**
  * User: chicks

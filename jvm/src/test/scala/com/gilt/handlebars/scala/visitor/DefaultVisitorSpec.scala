@@ -1,7 +1,6 @@
 package com.gilt.handlebars.scala.visitor
 
 import com.gilt.handlebars.scala.Handlebars
-import com.gilt.handlebars.scala.binding.dynamic._
 import com.gilt.handlebars.scala.helper.Helper
 import org.scalatest.{FunSpec, Matchers}
 

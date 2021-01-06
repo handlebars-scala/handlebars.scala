@@ -4,7 +4,6 @@ import org.scalatest.{ FunSpec, Matchers }
 import com.gilt.handlebars.scala.parser._
 import scala.io.Source
 import java.io.File
-import com.gilt.handlebars.scala.binding.dynamic._
 
 /**
  * User: chicks

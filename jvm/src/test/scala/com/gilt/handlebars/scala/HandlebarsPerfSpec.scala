@@ -81,7 +81,6 @@ class HandlebarsPerfSpec extends FunSpec with Matchers {
     )
 
   import Constants._
-  import com.gilt.handlebars.scala.binding.dynamic._
 
   describe("handlebars") {
     it(s"render a template in less than $Threshold ms") {

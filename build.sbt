@@ -7,8 +7,13 @@ Test / unmanagedSourceDirectories := Nil
 publish := {}
 publishArtifact := false
 
-val orgName = "io.github.handlebars-scala"
-
+inThisBuild(
+  Seq(
+    crossScalaVersions := Seq("2.13.4", "2.12.12"),
+    scalaVersion := crossScalaVersions.value.head,
+    organization := "io.github.handlebars-scala"
+  )
+)
 val projectName = "handlebars-scala"
 
 ThisBuild / licenses := Seq("BSD" -> url("http://www.opensource.org/licenses/bsd-license.php"))
@@ -16,9 +21,8 @@ ThisBuild / credentials += Credentials(Path.userHome / ".sonatype" / ".credentia
 
 lazy val `handlebars-scala` = crossProject(JVMPlatform, JSPlatform)
   .crossType(CrossType.Full)
-  .in(file("."))
+  .in(file("core"))
   .settings(
-    organization := orgName,
     name := projectName,
 
     pomExtra :=

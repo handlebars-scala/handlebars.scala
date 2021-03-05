@@ -1,93 +1,56 @@
-def scala211Dependencies(scalaVersion:String) = {
-  CrossVersion.partialVersion(scalaVersion) match {
-    case Some((2, scalaMajor)) if scalaMajor >= 11 =>
-      Seq(
-        "org.scala-lang.modules" %% "scala-parser-combinators" % "1.0.1")
-    case _ =>
-      Seq()
-  }
-}
+import sbtcrossproject.CrossPlugin.autoImport.{CrossType, crossProject}
 
-val updateVersion = taskKey[Unit]("Updates version in README")
-libraryDependencies ++= Seq(
-  "org.slf4j" % "slf4j-api" % "1.6.4",
-  "org.slf4j" % "slf4j-simple" % "1.6.4" % "test",
-  "org.scalatest" %% "scalatest" % "2.1.6" % "test"
-) ++ scala211Dependencies(scalaVersion.value)
+// Due to the cross project being in(file(".")), we need to prevent
+// the automatic root project from compiling.
+Compile / unmanagedSourceDirectories := Nil
+Test / unmanagedSourceDirectories := Nil
+publish := {}
+publishArtifact := false
 
-val commonSettings = Seq(
-  organization := "com.gilt",
+inThisBuild(
+  Seq(
+    crossScalaVersions := Seq("2.13.4", "2.12.12"),
+    scalaVersion := crossScalaVersions.value.head,
+    organization := "io.github.handlebars-scala"
+  )
+)
+val projectName = "handlebars-scala"
 
-  scalaVersion := "2.11.7",
+ThisBuild / licenses := Seq("BSD" -> url("http://www.opensource.org/licenses/bsd-license.php"))
+ThisBuild / credentials += Credentials(Path.userHome / ".sonatype" / ".credentials")
 
-  crossScalaVersions := Seq("2.11.7", "2.10.5"),
+lazy val `handlebars-scala` = crossProject(JVMPlatform, JSPlatform)
+  .crossType(CrossType.Full)
+  .in(file("core"))
+  .settings(
+    name := projectName,
 
-  libraryDependencies ++= Seq(
-    "org.slf4j" % "slf4j-api" % "1.6.4",
-    "org.slf4j" % "slf4j-simple" % "1.6.4" % "test",
-    "org.scalatest" %% "scalatest" % "2.2.4" % "test"
-  ) ++ scala211Dependencies(scalaVersion.value),
-
-  updateVersion := {
-    val log = streams.value.log
-    val readme = (baseDirectory.value / "README.md")
-    val content = IO.read(readme)
-    val regex = """("handlebars-scala[a-z-]*" % ")[0-9\.]+(")""".r
-    val replaced = regex.replaceAllIn(content, { m => s"${m.group(1)}${version.value}${m.group(2)}"})
-
-    IO.write(readme, replaced)
-    log.info(s"Updated ${readme}")
-  },
-
-  resolvers ++= Seq(
-    "Sonatype.org Snapshots" at "http://oss.sonatype.org/content/repositories/snapshots",
-    "Sonatype.org Releases" at "http://oss.sonatype.org/service/local/staging/deploy/maven2"
-  ),
-
-  scalacOptions ++= Seq(
-    "-deprecation",
-    "-unchecked"
-  ),
-
-  publishMavenStyle := true,
-
-  publishTo <<= version { (v: String) =>
-    val nexus = "https://oss.sonatype.org/"
-    if (v.trim.endsWith("SNAPSHOT"))
-      Some("snapshots" at nexus + "content/repositories/snapshots")
-    else
-      Some("releases"  at nexus + "/service/local/staging/deploy/maven2")
-  },
-
-  // For publishing / testing locally
-  //publishTo := Some(Resolver.file("m2",  new File(Path.userHome.absolutePath+"/.m2/repository")))
-
-  publishArtifact in Test := false,
-
-  pomIncludeRepository := { _ => false },
-
-  licenses := Seq("BSD-style" -> url("http://www.opensource.org/licenses/bsd-license.php")),
-
-  homepage := Some(url("https://github.com/mwunsch/handlebars.scala")),
-
-  pomExtra := (
-    <scm>
-      <url>git@github.com:mwunsch/handlebars.scala.git</url>
-      <connection>scm:git:git@github.com:mwunsch/handlebars.scala.git</connection>
+    pomExtra :=
+      <url>https://github.com/handlebars-scala/handlebars.scala</url>
+      <scm>
+        <url>git@github.com:handlebars-scala/{projectName}.git</url>
+        <connection>scm:git:git@github.com:handlebars-scala/{projectName}.git</connection>
+      <developerConnection>scm:git:git@github.com:handlebars-scala/{projectName}.git</developerConnection>
       </scm>
       <developers>
+        <developer>
+          <name>David Denton (fork owner)</name>
+          <email>dev@fintrospect.io</email>
+          <organization>{projectName}</organization>
+          <organizationUrl>http://daviddenton.github.io</organizationUrl>
+        </developer>
         <developer>
           <id>mwunsch</id>
           <name>Mark Wunsch</name>
           <url>http://markwunsch.com/</url>
-            <organization>Gilt</organization>
+          <organization>Gilt</organization>
           <organizationUrl>http://www.gilt.com</organizationUrl>
         </developer>
         <developer>
           <id>chicks</id>
           <name>Chris Hicks</name>
           <url>http://tech.gilt.com/</url>
-            <organization>Gilt</organization>
+          <organization>Gilt</organization>
           <organizationUrl>http://www.gilt.com</organizationUrl>
         </developer>
         <developer>
@@ -97,28 +60,23 @@ val commonSettings = Seq(
           <organization>Foundational Software</organization>
           <organizationUrl>http://www.foundationalsoftware.com</organizationUrl>
         </developer>
-      </developers>
-  )
-)
+      </developers>,
 
-lazy val core = (project in file("./")).
-  settings(commonSettings: _*).
-  settings(
-    name := "handlebars-scala")
+    crossScalaVersions := Seq("2.13.4", "2.12.12"),
+    scalaVersion := crossScalaVersions.value.head,
 
-lazy val `play-json` = (project in file("./addons/play-json/")).
-  settings(commonSettings: _*).
-  settings(
-    name := "handlebars-scala-play-json",
-    libraryDependencies += "com.typesafe.play" %% "play-json" % "2.5.4").
-  dependsOn(core)
+    scalacOptions ++= Seq(
+      "-deprecation",
+      "-feature",
+      "-language:implicitConversions"),
 
-lazy val `all` = (project in file("./addons/all")).
-  settings(commonSettings: _*).
-  settings(
-    updateVersion := {},
-    publish := {},
-    test := {}
-  ).
-  dependsOn(core, `play-json`).
-  aggregate(core, `play-json`)
+    libraryDependencies ++= Seq(
+      "org.scala-lang.modules" %%% "scala-parser-combinators" % "1.1.2",
+      "org.scala-lang.modules" %%% "scala-collection-compat" % "2.3.2",
+      "org.scalatest" %%% "scalatest" % "3.1.4" % Test))
+  .jsSettings(
+    libraryDependencies += "biz.enef" %%% "slogging" % "0.6.2")
+  .jvmSettings(
+    libraryDependencies ++= Seq(
+      "org.slf4j" % "slf4j-api" % "1.6.4",
+      "org.slf4j" % "slf4j-simple" % "1.6.4" % Test))
